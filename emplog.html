@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير خلاصة ملاحظات شهر</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, textarea, select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .report {
+            margin-top: 20px;
+            display: none; /* إخفاء التقرير في البداية */
+        }
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .report-header img {
+            max-width: 100px; /* حجم الشعار */
+            margin: 0 auto;
+        }
+        .report-title {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .report table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .report th, .report td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        .signatures {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        @media print {
+            .form-container {
+                display: none; /* إخفاء نموذج الإدخال عند الطباعة */
+            }
+            .report {
+                display: block; /* عرض التقرير عند الطباعة */
+            }
+            button {
+                display: none; /* إخفاء الأزرار عند الطباعة */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="report-header">
+        <div>
+            <h2>شركة أميال فارما للأدوية</h2>
+            <p>فرع الحوبان</p>
+        </div>
+        <div>
+            <img src="logo.png" alt="شعار الشركة"> <!-- استبدل "logo.png" بمسار الشعار الخاص بالشركة -->
+        </div>
+    </div>
+    
+    <div class="form-container">
+        <h1 class="report-title">تقرير خلاصة ملاحظات شهر</h1>
+        <form id="attendanceForm">
+            <div style="display: flex; justify-content: space-between;">
+                <div class="form-group" style="flex: 1; margin-right: 5px;">
+                    <label for="month">الشهر:</label>
+                    <select id="month" required>
+                        <option value="يناير">يناير</option>
+                        <option value="فبراير">فبراير</option>
+                        <option value="مارس">مارس</option>
+                        <option value="أبريل">أبريل</option>
+                        <option value="مايو">مايو</option>
+                        <option value="يونيو">يونيو</option>
+                        <option value="يوليو">يوليو</option>
+                        <option value="أغسطس">أغسطس</option>
+                        <option value="سبتمبر">سبتمبر</option>
+                        <option value="أكتوبر">أكتوبر</option>
+                        <option value="نوفمبر">نوفمبر</option>
+                        <option value="ديسمبر">ديسمبر</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1; margin-left: 5px;">
+                    <label for="year">السنة:</label>
+                    <input type="number" id="year" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="employeeName">اسم الموظف:</label>
+                <select id="employeeName" required>
+                    <option value="">اختر اسم الموظف</option>
+                    <option value="شهاب فوزي مجلي">شهاب فوزي مجلي</option>
+                    <option value="عاصم الفقيه">عاصم الفقيه</option>
+                    <option value="مراد دبوان">مراد دبوان</option>
+                    <option value="محمد المليكي">محمد المليكي</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="day">اليوم:</label>
+                <select id="day" required>
+                    <option value="">اختر اليوم</option>
+                    <option value="الأحد">الأحد</option>
+                    <option value="الإثنين">الإثنين</option>
+                    <option value="الثلاثاء">الثلاثاء</option>
+                    <option value="الأربعاء">الأربعاء</option>
+                    <option value="الخميس">الخميس</option>
+                    <option value="الجمعة">الجمعة</option>
+                    <option value="السبت">السبت</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date">التاريخ:</label>
+                <input type="date" id="date" required>
+            </div>
+            <div class="form-group">
+                <label for="status">نوع الحالة:</label>
+                <select id="status" required>
+                    <option value="">اختر نوع الحالة</option>
+                    <option value="خروج مباشر">خروج مباشر</option>
+                    <option value="إجازة">إجازة</option>
+                    <option value="غياب">غياب</option>
+                    
+            <option value="اخرى">اخرى</option>       
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="notes">الملاحظات:</label>
+                <textarea id="notes" rows="4"></textarea>
+            </div>
+            <button type="button" onclick="addReport()">إضافة إلى التقرير</button>
+        </form>
+    </div>
+
+    <div class="report">
+        <h3 id="reportEmployeeName"></h3>
+        <h3 id="reportMonthYear"></h3>
+        <table id="reportTable">
+            <thead>
+                <tr>
+                    <th>اليوم</th>
+                    <th>التاريخ</th>
+                    <th>نوع الحالة</th>
+                    <th>الملاحظات</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- سيتم إضافة الصفوف هنا -->
+            </tbody>
+        </table>
+        <div class="signatures">
+            <div>
+                <p>توقيع الموظف: _______________</p>
+            </div>
+            <div>
+                <p>توقيع المدير المباشر: _______________</p>
+            </div>
+            <div>
+                <p>توقيع مدير الموارد: _______________</p>
+            </div>
+        </div>
+        <button onclick="printReport()">طباعة التقرير</button>
+    </div>
+
+    <script>
+        let currentEmployee = '';
+
+        // تعيين القيم الافتراضية للشهر والسنة
+        const today = new Date();
+        document.getElementById('month').value = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'][today.getMonth()];
+        document.getElementById('year').value = today.getFullYear();
+
+        function addReport() {
+            const employeeName = document.getElementById('employeeName').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            const day = document.getElementById('day').value;
+            const date = document.getElementById('date').value;
+            const status = document.getElementById('status').value;
+            const notes = document.getElementById('notes').value;
+
+            if (employeeName && month && year && day && date && status) {
+                if (currentEmployee === '') {
+                    currentEmployee = employeeName;
+                    document.getElementById('reportEmployeeName').innerText = `اسم الموظف: ${currentEmployee}`;
+                    document.getElementById('reportMonthYear').innerText = `الشهر: ${month} ${year}`;
+                    document.querySelector('.report').style.display = 'block'; // إظهار التقرير
+                }
+
+                const table = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
+                const newRow = table.insertRow();
+                newRow.innerHTML = `
+                    <td>${day}</td>
+                    <td>${date}</td>
+                    <td>${status}</td>
+                    <td>${notes || ''}</td>
+                `;
+
+                // إعادة تعيين الحقول الأخرى
+                document.getElementById('day').value = '';
+                document.getElementById('date').value = '';
+                document.getElementById('status').value = '';
+                document.getElementById('notes').value = '';
+            } else {
+                alert("يرجى ملء جميع الحقول الأساسية.");
+            }
+        }
+
+        function printReport() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

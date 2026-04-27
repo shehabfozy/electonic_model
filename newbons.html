@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link  rel="stylesheet" href="css/style.min.css">
+         <link  rel="stylesheet" href="css/fontello.min.css">
+         
+    <title>طلب بونص إضافي لعميل</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 5px;
+            padding: 0;
+            font-size: 18px;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .form-container {
+            width: 100%;
+            max-width: 1000px;
+            border: 3px solid #000;
+            border-radius: 10px;
+            padding: 15px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .form-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #333;
+        }
+        
+        .header {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+        
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .company-info, .document-info {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .company-info {
+            text-align: right;
+        }
+        
+        .logo {
+            text-align: center;
+            margin: 5px 0;
+            order: -1;
+            width: 100%;
+        }
+        
+        .logo img {
+            max-height: 80px;
+            max-width: 200px;
+        }
+        
+        .document-info {
+            text-align: left;
+        }
+        
+        .form-section {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        
+        .input-group {
+            margin-bottom: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            gap: 15px;
+        }
+        
+        .input-row .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: inline-block;
+            width: 100px;
+            margin-left: 5px;
+            margin-bottom: 5px;
+        }
+        
+        input, textarea, select {
+            padding: 6px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        textarea {
+            height: 60px;
+        }
+        
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 18---px;
+            min-width: 900-px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            word-break: break-word;
+        }
+        
+        th {
+            background-color:#fff;
+        }
+        
+        button {
+            padding: 8px 15px;
+            margin: 8px 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .percentage::after {
+            content: "%";
+            margin-right: 3px;
+        }
+        
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            direction: rtl;
+            flex-wrap: nowrap;
+        }
+        
+        .signature-box {
+            text-align: center;
+            width: 18%;
+            margin: 0 5px;
+        }
+        
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 40px;
+            padding-top: 5px;
+            height: 60px;
+        }
+        
+        .declaration {
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 1px solid #000;
+            font-size: 12px;
+            text-align: justify;
+        }
+        
+        @media (min-width: 768px) {
+            body {
+                font-size: 16px;
+                margin: 20px;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            .form-title {
+                font-size: 24px;
+            }
+            
+            .header {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .logo {
+                order: 0;
+                width: auto;
+                flex: 1;
+                margin: 0;
+            }
+            
+            .logo img {
+                max-height: 100px;
+            }
+            
+            .input-group {
+                flex-wrap: nowrap;
+            }
+            
+            label {
+                width: 120px;
+                margin-bottom: 0;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .form-container {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            .no-print {
+                display: none;
+            }
+            
+            .form-section:last-of-type {
+                display: none;
+            }
+            
+            button {
+                display: none;
+            }
+            
+            body {
+                font-size: 18px;
+                margin: 10mm;
+            }
+            
+            .logo img {
+                max-height: 80px;
+                margin-bottom:20px
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="logo">
+    <!-- شعار الشركة مضمّن Base64 -->
+    <img src="logo.png" alt="شعار أميال فارما">
+</div>
+        <!-- عنوان النموذج -->
+
+        <!-- رأس الصفحة -->
+        <div class="header">
+            <div class="header-row">
+                <div class="company-info">
+                    <h3>أميال فارما للأدوية</h3>
+                    <p>الفرع: 
+                        <select id="branch">
+                            <option value="">اختر الفرع</option>
+                            <option value="فرع الحوبان">فرع الحوبان</option>
+                            <option value="فرع أب">فرع أب</option>
+                            <option value="فرع صنعاء">فرع صنعاء</option>
+                        </select>
+                    </p>
+                </div>
+     
+                <div class="document-info">
+                    <p>التاريخ: <span id="currentDate"></span></p>
+                    <p>القسم: 
+                        <select id="department">
+                            <option value="">اختر القسم</option>
+                            <option value="جلين">جلين</option>
+                            <option value="أميال">أميال</option>
+                        </select>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-title">طلب بونص إضافي لعميل</div
+        <!-- نموذج بيانات المندوب -->
+        <div class="form-section">
+            <h3>بيانات المندوب</h3>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>اسم المندوب:</label>
+                    <select id="delegateName">
+                        <option value="">اختر المندوب</option>
+                        <option value="محمد المليكي">محمد المليكي</option>
+                        <option value="عاصم الفقيه">عاصم الفقيه</option>
+                        <option value="مراد">مراد</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>الوظيفة:</label>
+                    <select id="jobTitle">
+                        <option value="">اختر الوظيفة</option>
+                        <option value="مندوب علمي">مندوب علمي</option>
+                        <option value="متحصل">متحصل</option>
+                        <option value="مدير فرع">مدير فرع</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>اسم العميل:</label>
+                <input type="text" id="clientName">
+            </div>
+            <div class="input-group">
+                <label>سبب التعويض:</label>
+                <textarea id="compensationReason" rows="2"></textarea>
+            </div>
+        </div>
+
+        <!-- إقرار الاستلام -->
+        <div class="acknowledgment">
+            <p>أقر أنا الموقع أدناه بأنني استلمت الأصناف التالية الواضحة بالجدول التالي:</p>
+        </div>
+
+        <!-- نموذج إدخال الأصناف -->
+        <div class="form-section no-print">
+            <h3>إضافة أصناف</h3>
+            <div class="input-group">
+                <label>اسم الصنف:</label>
+                <input type="text" id="itemName">
+            </div>
+            <div class="input-group">
+                <label>رقم الفاتورة:</label>
+                <input type="number" id="invoiceNumber">
+            </div>
+            <div class="input-group">
+                <label>الكمية:</label>
+                <input type="number" id="quantity">
+            </div>
+            <div class="input-group">
+                <label>تاريخ الانتهاء:</label>
+                <input type="date" id="expiryDate" value="">
+            </div>
+            <div class="input-group">
+                <label>بونص الفاتورة:</label>
+                <select id="invoiceBonus">
+              <option value="0">0%</option>     
+                    <option value="10">10%</option>
+                    <option value="20">20%</option>
+                    <option value="30">30%</option>
+                    <option value="40">40%</option>
+                    <option value="50">50%</option>
+                    <option value="60">60%</option>
+                    <option value="70">70%</option>
+                    <option value="80">80%</option>
+                    <option value="90">90%</option>
+                    <option value="100">100%</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>البونص المطلوب:</label>
+                <select id="requiredBonus">
+                    <option value="10">10%</option>
+                    <option value="20">20%</option>
+                    <option value="30">30%</option>
+                    <option value="40">40%</option>
+                    <option value="50">50%</option>
+                    <option value="60">60%</option>
+                    <option value="70">70%</option>
+                    <option value="80">80%</option>
+                    <option value="90">90%</option>
+                    <option value="100">100%</option>
+                </select>
+            </div>
+            <button onclick="addItem()">إضافة إلى القائمة</button>
+        </div>
+
+        <!-- جدول الأصناف المضاف -->
+        <div class="table-container">
+            <table id="itemsTable">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th>اسم الصنف</th>
+                        <th>رقم الفاتورة</th>
+                        <th>الكمية</th>
+                        <th>تاريخ الانتهاء</th>
+                        <th>بونص الفاتورة</th>
+                        <th>البونص المطلوب</th>
+                    </tr>
+                </thead>
+                <tbody id="itemsList">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- الإقرار -->
+        <div class="declaration">
+            <p>وأعتبر مسئولاً عن الأصناف كاملة من تاريخ استلامها حتى أوصل الأصناف للعميل حسب الفاتورة وأن أوقع على استلامها وألتزم بمتابعة الأصناف عند العميل حسب الاتفاق معه بتصريف الأصناف والتحصيل من الأصناف المباعة حسب الاستحقاق.</p>
+        </div>
+
+        <!-- توقيعات -->
+        <div class="signatures">
+            <div class="signature-box">
+                <div class="signature-line">المندوب</div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line">مدير الفرع</div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line">محاسب الفرع</div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line">مدير المبيعات</div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line">مدير الحسابات</div>
+            </div>
+        </div>
+
+        <button onclick="window.print()" class="no-print">طباعة النموذج</button>
+    </div>
+
+    <script>
+        // تعيين التاريخ التلقائي
+        document.getElementById('expiryDate').valueAsDate = new Date();
+        
+        // عرض تاريخ اليوم في رأس الصفحة
+        const today = new Date();
+        const dateString = today.toLocaleDateString('ar-EG');
+        document.getElementById('currentDate').textContent = dateString;
+
+        let itemCounter = 1;
+
+        function addItem() {
+            // جلب القيم من الحقول
+            const itemName = document.getElementById('itemName').value;
+            const invoiceNumber = document.getElementById('invoiceNumber').value;
+            const quantity = document.getElementById('quantity').value;
+            const expiryDate = document.getElementById('expiryDate').value;
+            const invoiceBonus = document.getElementById('invoiceBonus').value;
+            const requiredBonus = document.getElementById('requiredBonus').value;
+
+            // التحقق من إدخال البيانات المطلوبة
+            if (!itemName || !invoiceNumber || !quantity) {
+                alert('الرجاء إدخال البيانات المطلوبة (اسم الصنف، رقم الفاتورة، الكمية)');
+                return;
+            }
+
+            // إنشاء صف جديد في الجدول
+            const tableBody = document.getElementById('itemsList');
+            const newRow = tableBody.insertRow();
+
+            // إضافة الخلايا إلى الصف
+            newRow.innerHTML = `
+                <td>${itemCounter++}</td>
+                <td>${itemName}</td>
+                <td>${invoiceNumber}</td>
+                <td>${quantity}</td>
+                <td>${expiryDate}</td>
+                <td class="percentage">${invoiceBonus}</td>
+                <td class="percentage">${requiredBonus}</td>
+            `;
+
+            // مسح الحقول بعد الإضافة
+            document.getElementById('itemName').value = '';
+            document.getElementById('invoiceNumber').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('expiryDate').valueAsDate = new Date();
+            document.getElementById('invoiceBonus').value = '10';
+            document.getElementById('requiredBonus').value = '10';
+        }
+    </script>
+</body>
+</html>

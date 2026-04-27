@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام نماذج الموظفين - أميال فارما</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 5mm;
+        }
+        
+        :root {
+            --primary-color: #0070C0;
+            --secondary-color: #4CAF50;
+            --danger-color: #f44336;
+            --light-gray: #f5f7fa;
+            --dark-gray: #444;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Segoe UI', Tahoma, sans-serif;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-gray);
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .header img {
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .company-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .system-title {
+            font-size: 18px;
+            color: var(--dark-gray);
+            margin-bottom: 5px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .nav-tab {
+            padding: 10px 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+            min-width: 180px;
+            font-size: 14px;
+        }
+        
+        .nav-tab:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .nav-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .form-container {
+            display: none;
+            width: 100%;
+            min-height: auto;
+            margin: 0 auto;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .form-container.active {
+            display: block;
+        }
+        
+        .form-title {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark-gray);
+            font-size: 13px;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 112, 192, 0.2);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .inline-fields {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .inline-fields > div {
+            flex: 1;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .print-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .print-btn:hover {
+            background-color: #005a9c;
+        }
+        
+        .submit-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background-color: #3e8e41;
+        }
+        
+        .reset-btn {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #d32f2f;
+        }
+        
+        .restore-btn {
+            background-color: #FF9800;
+            color: white;
+        }
+        
+        .restore-btn:hover {
+            background-color: #e68a00;
+        }
+        
+        .signature {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #ccc;
+        }
+        
+        .signature div {
+            width: 30%;
+            text-align: center;
+        }
+        
+        .signature p {
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .signature hr {
+            width: 80%;
+            margin: 0 auto;
+            border: none;
+            border-top: 1px solid #999;
+        }
+        
+        .error-message {
+            color: var(--danger-color);
+            font-size: 11px;
+            margin-top: 3px;
+            display: none;
+        }
+        
+        .input-error {
+            border-color: var(--danger-color) !important;
+        }
+        
+        .radio-group {
+            margin: 5px 0;
+        }
+        
+        .radio-group label {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: normal;
+            font-size: 13px;
+        }
+        
+        .signature-line {
+            border-top: 1px dashed #333;
+            margin-top: 5mm;
+            padding-top: 1mm;
+            text-align: left;
+            width: 60mm;
+            display: inline-block;
+            font-size: 10pt;
+        }
+        
+        .approval-section {
+            margin-top: 10mm;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .approval-option {
+            text-align: center;
+            margin: 0 3mm;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .app-container, .app-container * {
+                visibility: visible;
+            }
+            
+            .app-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .nav-tabs, .no-print {
+                display: none !important;
+            }
+            
+            .form-container {
+                box-shadow: none;
+                border: none;
+                padding: 10mm;
+                width: 100%;
+                height: auto;
+                page-break-inside: avoid;
+            }
+            
+            input, textarea, select {
+                border: none !important;
+                appearance: none;
+                -webkit-appearance: none;
+                background: transparent !important;
+                padding: 2px !important;
+                font-size: 12px !important;
+            }
+            
+            textarea {
+                overflow: hidden;
+                white-space: pre-wrap;
+            }
+            
+            .form-title {
+                font-size: 16px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .form-group {
+                margin-bottom: 8px !important;
+            }
+            
+            label {
+                font-size: 12px !important;
+                margin-bottom: 3px !important;
+            }
+            
+            .signature p {
+                margin-bottom: 20px !important;
+                font-size: 12px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <img src="logo.png" alt="شعار الشركة" onerror="this.style.display='none'">
+            <div class="company-name">أميـــــآل فـــــارما</div>
+            <div class="system-title">نظام نماذج الموظفين</div>
+        </div>
+        
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-form="leaveForm">نموذج طلب إجازة</div>
+            <div class="nav-tab" data-form="exitForm">نموذج إذن خروج</div>
+        </div>
+        
+        <!-- نموذج طلب الإجازة -->
+        <div class="form-container active" id="leaveForm">
+            <div class="form-title">نموذج طلب إجازة سنوية</div>
+            
+            <form id="leaveRequestForm">
+                <div class="form-group">
+                    <label for="managerName">مدير إدارة / فرع المحترم:</label>
+                    <input type="text" id="managerName" required>
+                    <div class="error-message" id="managerNameError">يرجى إدخال اسم المدير</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="employeeName">اسم الموظف:</label>
+                    <input type="text" id="employeeName" required>
+                    <div class="error-message" id="employeeNameError">يرجى إدخال اسم الموظف</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="jobTitle">الوظيفة:</label>
+                    <input type="text" id="jobTitle" required>
+                    <div class="error-message" id="jobTitleError">يرجى إدخال المسمى الوظيفي</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="employeeId">الرقم الوظيفي:</label>
+                    <input type="text" id="employeeId" required>
+                    <div class="error-message" id="employeeIdError">يرجى إدخال الرقم الوظيفي</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="leaveType">نوع الإجازة:</label>
+                    <select id="leaveType" required>
+                        <option value="">-- اختر نوع الإجازة --</option>
+                        <option value="سنوية">سنوية</option>
+                        <option value="مرضية">مرضية</option>
+                        <option value="طارئة">طارئة</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                    <div class="error-message" id="leaveTypeError">يرجى اختيار نوع الإجازة</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="leaveDays">عدد أيام الإجازة:</label>
+                    <input type="number" id="leaveDays" min="1" required>
+                    <div class="error-message" id="leaveDaysError">يرجى إدخال عدد الأيام (1 يوم على الأقل)</div>
+                </div>
+                
+                <div class="inline-fields">
+                    <div class="form-group">
+                        <label for="startDate">تاريخ بداية الإجازة:</label>
+                        <input type="date" id="startDate" required>
+                        <div class="error-message" id="startDateError">يرجى تحديد تاريخ البداية</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="endDate">تاريخ نهاية الإجازة:</label>
+                        <input type="date" id="endDate" required>
+                        <div class="error-message" id="endDateError">يرجى تحديد تاريخ النهاية</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="substitute">الموظف الذي سينوب عني:</label>
+                    <input type="text" id="substitute">
+                </div>
+                
+                <div class="form-group">
+                    <label for="reason">الغرض من الإجازة:</label>
+                    <textarea id="reason" required></textarea>
+                    <div class="error-message" id="reasonError">يرجى إدخال الغرض من الإجازة</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phoneNumber">رقم الجوال:</label>
+                    <input type="tel" id="phoneNumber" pattern="[0-9]{10}" required>
+                    <div class="error-message" id="phoneNumberError">يرجى إدخال رقم جوال صحيح (10 أرقام)</div>
+                </div>
+                
+                <div class="form-group no-print">
+                    <label for="saveLeaveCopy">حفظ نسخة:</label>
+                    <input type="checkbox" id="saveLeaveCopy" checked>
+                </div>
+
+                <div class="signature">
+                    <div>
+                        <p>توقيع مقدم الطلب</p>
+                        <hr>
+                        <p>التاريخ: ___________</p>
+                    </div>
+                    <div>
+                        <p>توقيع المدير المباشر</p>
+                        <hr>
+                        <p>التاريخ: ___________</p>
+                    </div>
+                    <div>
+                        <p>توقيع مدير الموارد البشرية</p>
+                        <hr>
+                        <p>التاريخ: ___________</p>
+                    </div>
+                </div>
+            </form>
+            
+            <div class="button-group no-print">
+                <button type="button" class="print-btn" onclick="validateAndPrint('leave')">
+                    طباعة النموذج
+                </button>
+                <button type="button" class="submit-btn" onclick="submitForm('leave')">
+                    إرسال الطلب
+                </button>
+                <button type="button" class="reset-btn" onclick="resetForm('leave')">
+                    مسح النموذج
+                </button>
+                <button type="button" class="restore-btn" onclick="restoreForm('leave')">
+                    استعادة البيانات
+                </button>
+            </div>
+        </div>
+        
+        <!-- نموذج إذن الخروج -->
+        <div class="form-container" id="exitForm">
+            <div class="form-title">طلب إذن خروج لإنجاز مهمة عمل أثناء الدوام الرسمي</div>
+            
+            <form id="exitRequestForm">
+                <p style="font-size: 14px; margin-bottom: 10px;">السلام عليكم ورحمة الله وبركاته</p>
+                
+                <div class="form-group">
+                    <label>السيد/ مدير <input type="text" id="exitManagerName" placeholder="اسم المدير" style="width: 50%;" required> المحترم</label>
+                    <div class="error-message" id="exitManagerNameError">يرجى إدخال اسم المدير</div>
+                    <p style="font-size: 14px; margin: 8px 0;">أرجو من سيادتكم التكرم بالموافقة على خروجي من مقر العمل أثناء الدوام الرسمي وفقاً للتفاصيل التالية:</p>
+                </div>
+
+                <div class="inline-fields">
+                    <div class="form-group">
+                        <label for="exitDay">اليوم</label>
+                        <select id="exitDay" required>
+                            <option value="">-- اختر اليوم --</option>
+                            <option value="الأحد">الأحد</option>
+                            <option value="الاثنين">الاثنين</option>
+                            <option value="الثلاثاء">الثلاثاء</option>
+                            <option value="الأربعاء">الأربعاء</option>
+                            <option value="الخميس">الخميس</option>
+                            <option value="الجمعة">الجمعة</option>
+                            <option value="السبت">السبت</option>
+                        </select>
+                        <div class="error-message" id="exitDayError">يرجى اختيار اليوم</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exitDate">التاريخ</label>
+                        <input type="date" id="exitDate" required>
+                        <div class="error-message" id="exitDateError">يرجى تحديد التاريخ</div>
+                    </div>
+                </div>
+
+                <div class="inline-fields">
+                    <div class="form-group">
+                        <label for="exitTime">وقت الخروج</label>
+                        <input type="time" id="exitTime" required>
+                        <div class="error-message" id="exitTimeError">يرجى تحديد وقت الخروج</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="returnTime">وقت العودة</label>
+                        <input type="time" id="returnTime" required>
+                        <div class="error-message" id="returnTimeError">يرجى تحديد وقت العودة</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="missionDetails">إنجاز مهمة العمل التالية:</label>
+                    <textarea id="missionDetails" placeholder="تفاصيل المهمة..." required></textarea>
+                    <div class="error-message" id="missionDetailsError">يرجى إدخال تفاصيل المهمة</div>
+                </div>
+
+                <div class="inline-fields">
+                    <div class="form-group">
+                        <label for="exitEmployeeName">الاسم</label>
+                        <input type="text" id="exitEmployeeName" placeholder="الاسم الكامل" required>
+                        <div class="error-message" id="exitEmployeeNameError">يرجى إدخال اسم الموظف</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exitJobTitle">الوظيفة</label>
+                        <input type="text" id="exitJobTitle" placeholder="المسمى الوظيفي" required>
+                        <div class="error-message" id="exitJobTitleError">يرجى إدخال المسمى الوظيفي</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="exitEmployeeId">الرقم الوظيفي (رقم كود البصمة)</label>
+                    <input type="text" id="exitEmployeeId" placeholder="الرقم الوظيفي" required>
+                    <div class="error-message" id="exitEmployeeIdError">يرجى إدخال الرقم الوظيفي</div>
+                </div>
+
+                <div class="inline-fields">
+                    <div class="form-group">
+                        <label for="submitDay">يوم التحرير</label>
+                        <select id="submitDay" required>
+                            <option value="">-- اختر اليوم --</option>
+                            <option value="الأحد">الأحد</option>
+                            <option value="الاثنين">الاثنين</option>
+                            <option value="الثلاثاء">الثلاثاء</option>
+                            <option value="الأربعاء">الأربعاء</option>
+                            <option value="الخميس">الخميس</option>
+                            <option value="الجمعة">الجمعة</option>
+                            <option value="السبت">السبت</option>
+                        </select>
+                        <div class="error-message" id="submitDayError">يرجى اختيار يوم التحرير</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="submitDate">تاريخ التحرير</label>
+                        <input type="date" id="submitDate" required>
+                        <div class="error-message" id="submitDateError">يرجى تحديد تاريخ التحرير</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="signature-line">التوقيع</div>
+                </div>
+
+                <div class="approval-section">
+                    <div class="approval-option">
+                        <p style="font-size: 14px; margin-bottom: 8px;">رأي الرئيس المباشر:</p>
+                        <div class="radio-group">
+                            <input type="radio" id="approved" name="approval" value="approved">
+                            <label for="approved">موافق</label>
+                            
+                            <input type="radio" id="notApproved" name="approval" value="notApproved">
+                            <label for="notApproved">غير موافق</label>
+                        </div>
+                        <div class="signature-line">توقيع الرئيس المباشر</div>
+                    </div>
+
+                    <div class="approval-option">
+                        <div class="signature-line">توقيع مدير الموارد البشرية</div>
+                    </div>
+                </div>
+                
+                <div class="form-group no-print">
+                    <label for="saveExitCopy">حفظ نسخة:</label>
+                    <input type="checkbox" id="saveExitCopy" checked>
+                </div>
+            </form>
+            
+            <div class="button-group no-print">
+                <button type="button" class="print-btn" onclick="validateAndPrint('exit')">
+                    طباعة النموذج
+                </button>
+                <button type="button" class="submit-btn" onclick="submitForm('exit')">
+                    إرسال الطلب
+                </button>
+                <button type="button" class="reset-btn" onclick="resetForm('exit')">
+                    مسح النموذج
+                </button>
+                <button type="button" class="restore-btn" onclick="restoreForm('exit')">
+                    استعادة البيانات
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // تنقل بين النماذج
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // إزالة التنشيط من جميع الألسنة
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.form-container').forEach(f => f.classList.remove('active'));
+                
+                // تنشيط اللسان والنموذج المحدد
+                this.classList.add('active');
+                const formId = this.getAttribute('data-form');
+                document.getElementById(formId).classList.add('active');
+            });
+        });
+        
+        // تحميل البيانات المحفوظة عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedData('leave');
+            loadSavedData('exit');
+            
+            // تعيين التواريخ الافتراضية لنموذج الإجازة
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').min = null;
+            document.getElementById('endDate').min = today;
+            
+            // تحديث تاريخ النهاية عند تغيير تاريخ البداية
+            document.getElementById('startDate').addEventListener('change', function() {
+                const startDate = this.value;
+                document.getElementById('endDate').min = startDate;
+                
+                if (document.getElementById('endDate').value && document.getElementById('endDate').value < startDate) {
+                    document.getElementById('endDate').value = startDate;
+                }
+            });
+            
+            // تعيين التواريخ الافتراضية لنموذج الخروج
+            const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+            const currentDay = new Date().getDay();
+            document.getElementById('submitDay').value = days[currentDay];
+            document.getElementById('submitDate').value = today;
+            
+            // تعيين أوقات افتراضية للخروج والعودة
+            const now = new Date();
+            const exitTime = new Date(now.getTime() + 30*60000);
+            document.getElementById('exitTime').value = exitTime.toTimeString().substr(0, 5);
+            
+            const returnTime = new Date(exitTime.getTime() + 2*60*60000);
+            document.getElementById('returnTime').value = returnTime.toTimeString().substr(0, 5);
+        });
+        
+        // التحقق من صحة النموذج
+        function validateForm(formType) {
+            let isValid = true;
+            const prefix = formType === 'leave' ? '' : 'exit';
+            
+            // إعادة تعيين رسائل الخطأ
+            document.querySelectorAll(`#${formType}Form .error-message`).forEach(el => el.style.display = 'none');
+            document.querySelectorAll(`#${formType}Form .input-error`).forEach(el => el.classList.remove('input-error'));
+            
+            // التحقق من الحقول المطلوبة
+            const requiredFields = {
+                leave: ['managerName', 'employeeName', 'jobTitle', 'employeeId', 'leaveType', 'leaveDays', 'startDate', 'endDate', 'reason', 'phoneNumber'],
+                exit: ['exitManagerName', 'exitDay', 'exitDate', 'exitTime', 'returnTime', 'missionDetails', 'exitEmployeeName', 'exitJobTitle', 'exitEmployeeId', 'submitDay', 'submitDate']
+            };
+            
+            requiredFields[formType].forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                const errorId = fieldId + 'Error';
+                const errorElement = document.getElementById(errorId);
+                
+                if (!field.value.trim()) {
+                    field.classList.add('input-error');
+                    if (errorElement) errorElement.style.display = 'block';
+                    isValid = false;
+                } 
+                else if (fieldId === 'phoneNumber' && !/^[0-9]{10}$/.test(field.value)) {
+                    field.classList.add('input-error');
+                    if (errorElement) errorElement.style.display = 'block';
+                    isValid = false;
+                }
+                else if (fieldId === 'leaveDays' && parseInt(field.value) < 1) {
+                    field.classList.add('input-error');
+                    if (errorElement) errorElement.style.display = 'block';
+                    isValid = false;
+                }
+            });
+            
+            // تحقق إضافي لتواريخ الإجازة
+            if (formType === 'leave') {
+                const startDate = new Date(document.getElementById('startDate').value);
+                const endDate = new Date(document.getElementById('endDate').value);
+                
+                if (endDate < startDate) {
+                    document.getElementById('endDate').classList.add('input-error');
+                    document.getElementById('endDateError').textContent = 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية';
+                    document.getElementById('endDateError').style.display = 'block';
+                    isValid = false;
+                }
+            }
+            
+            // تحقق إضافي لأوقات الخروج
+            if (formType === 'exit') {
+                const exitTime = document.getElementById('exitTime').value;
+                const returnTime = document.getElementById('returnTime').value;
+                
+                if (returnTime <= exitTime) {
+                    document.getElementById('returnTime').classList.add('input-error');
+                    document.getElementById('returnTimeError').textContent = 'وقت العودة يجب أن يكون بعد وقت الخروج';
+                    document.getElementById('returnTimeError').style.display = 'block';
+                    isValid = false;
+                }
+            }
+            
+            return isValid;
+        }
+        
+        // طباعة النموذج بعد التحقق من صحته
+        function validateAndPrint(formType) {
+            if (validateForm(formType)) {
+                if (document.getElementById(`save${formType.charAt(0).toUpperCase() + formType.slice(1)}Copy`).checked) {
+                    saveData(formType);
+                }
+                
+                // إخفاء جميع النماذج غير المطلوبة
+                document.querySelectorAll('.form-container').forEach(form => {
+                    form.style.display = 'none';
+                });
+                
+                // إظهار النموذج المطلوب فقط
+                document.getElementById(`${formType}Form`).style.display = 'block';
+                
+                window.print();
+                
+                // إعادة النماذج إلى حالتها الأصلية بعد الطباعة
+                setTimeout(() => {
+                    document.querySelectorAll('.form-container').forEach(form => {
+                        form.style.display = form.classList.contains('active') ? 'block' : 'none';
+                    });
+                }, 100);
+            } else {
+                alert('يرجى ملء جميع الحقول المطلوبة بشكل صحيح قبل الطباعة');
+            }
+        }
+        
+        // إرسال النموذج
+        function submitForm(formType) {
+            if (validateForm(formType)) {
+                if (document.getElementById(`save${formType.charAt(0).toUpperCase() + formType.slice(1)}Copy`).checked) {
+                    saveData(formType);
+                }
+                
+                // هنا يمكنك إضافة كود لإرسال النموذج إلى الخادم
+                alert(`تم إرسال ${formType === 'leave' ? 'طلب الإجازة' : 'إذن الخروج'} بنجاح، سيتم مراجعته من قبل الإدارة المختصة`);
+                resetForm(formType);
+            }
+        }
+        
+        // مسح النموذج
+        function resetForm(formType) {
+            if (confirm(`هل أنت متأكد من أنك تريد إعادة تعيين ${formType === 'leave' ? 'طلب الإجازة' : 'إذن الخروج'}؟`)) {
+                document.getElementById(`${formType}RequestForm`).reset();
+                document.querySelectorAll(`#${formType}Form .error-message`).forEach(el => el.style.display = 'none');
+                document.querySelectorAll(`#${formType}Form .input-error`).forEach(el => el.classList.remove('input-error'));
+                localStorage.removeItem(`${formType}FormData`);
+            }
+        }
+        
+        // حفظ البيانات في التخزين المحلي
+        function saveData(formType) {
+            const formData = {};
+            const fields = document.querySelectorAll(`#${formType}RequestForm input, #${formType}RequestForm select, #${formType}RequestForm textarea`);
+            
+            fields.forEach(field => {
+                if (field.type !== 'button' && field.type !== 'submit' && field.type !== 'reset') {
+                    formData[field.id] = field.value;
+                }
+            });
+            
+            localStorage.setItem(`${formType}FormData`, JSON.stringify(formData));
+        }
+        
+        // تحميل البيانات المحفوظة
+        function loadSavedData(formType) {
+            const savedData = localStorage.getItem(`${formType}FormData`);
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                
+                for (const key in formData) {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.value = formData[key];
+                    }
+                }
+            }
+        }
+        
+        // استعادة البيانات المحفوظة
+        function restoreForm(formType) {
+            const savedData = localStorage.getItem(`${formType}FormData`);
+            if (savedData) {
+                if (confirm(`هل تريد استعادة البيانات المحفوظة ل${formType === 'leave' ? 'طلب الإجازة' : 'إذن الخروج'}؟`)) {
+                    const formData = JSON.parse(savedData);
+                    
+                    for (const key in formData) {
+                        const element = document.getElementById(key);
+                        if (element) {
+                            element.value = formData[key];
+                        }
+                    }
+                    
+                    alert('تم استعادة البيانات بنجاح');
+                }
+            } else {
+                alert('لا توجد بيانات محفوظة لاستعادتها');
+            }
+        }
+    </script>
+</body>
+</html>

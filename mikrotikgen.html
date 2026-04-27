@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد كروت وسكريبتات MikroTik - مع حفظ الإعدادات</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-color: #ced4da;
+            --border-radius: 0.25rem;
+            --spacing-small: 0.5rem;
+            --spacing-medium: 1rem;
+            --spacing-large: 1.5rem;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            padding: var(--spacing-large);
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            direction: rtl;
+            text-align: right;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: var(--spacing-large);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: var(--spacing-medium);
+        }
+        h2 {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: var(--spacing-small);
+            margin-top: var(--spacing-large);
+        }
+         h3 {
+            margin-top: var(--spacing-large);
+            margin-bottom: var(--spacing-medium);
+            padding-bottom: var(--spacing-small);
+            border-bottom: 1px dashed var(--secondary-color);
+            text-align: right;
+            color: var(--dark-color);
+        }
+        .input-group {
+            margin-bottom: var(--spacing-large);
+            padding: var(--spacing-medium);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: #e9ecef;
+        }
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-medium);
+            margin-bottom: var(--spacing-small);
+            align-items: center;
+        }
+        .input-item {
+            flex: 1 1 200px;
+            display: flex;
+            flex-direction: column;
+        }
+         .input-item.checkbox-item {
+             flex-direction: row;
+             align-items: center;
+             flex-basis: auto;
+             min-width: fit-content;
+         }
+        label {
+            font-weight: bold;
+            margin-bottom: var(--spacing-small);
+            display: block;
+            font-size: 0.9rem;
+        }
+         .input-item.checkbox-item label {
+             margin-bottom: 0;
+             margin-left: var(--spacing-small);
+         }
+        input[type="text"], input[type="number"], input[type="file"], select, textarea {
+            padding: var(--spacing-small);
+            font-size: 1rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            box-sizing: border-box;
+        }
+         input[type="color"] {
+             padding: 5px;
+             height: calc(1rem + var(--spacing-small) * 2 + 2px);
+             width: 50px;
+             cursor: pointer;
+         }
+        input[type="checkbox"] {
+            width: 1.2em;
+            height: 1.2em;
+            margin-left: var(--spacing-small);
+            vertical-align: middle;
+            cursor: pointer;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+            font-family: monospace;
+            background-color: #f8f9fa;
+        }
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: var(--spacing-medium) var(--spacing-large);
+            font-size: 1rem;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: var(--spacing-medium);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-small);
+        }
+        button:hover { background-color: #0056b3; transform: translateY(-2px); }
+        button:active { background-color: #004085; transform: translateY(0); }
+        button:disabled { background-color: var(--secondary-color); cursor: not-allowed; transform: none; }
+        .button-group {
+            text-align: center;
+            margin-top: var(--spacing-large);
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-medium);
+            justify-content: center;
+        }
+        .button-group button { flex-grow: 1; max-width: 250px; justify-content: center; }
+        .preview {
+            border: 1px dashed var(--secondary-color);
+            margin-top: var(--spacing-large);
+            padding: var(--spacing-medium);
+            background-color: var(--light-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 250px;
+            overflow: hidden;
+            position: relative;
+        }
+        .box {
+            border: 1px solid #000;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .box div { position: absolute; white-space: nowrap; direction: ltr; text-align: left; }
+        .status-message {
+            text-align: center;
+            margin-top: var(--spacing-medium);
+            font-weight: bold;
+            color: var(--info-color);
+            min-height: 1.5em;
+        }
+        #serialNumberInputs, #datePrintingInputs, #userNameTextInputs, #passwordTextInputs { display: none; }
+        #passSufixItem { display: flex; }
+
+        @media (max-width: 768px) {
+            .input-row { flex-direction: column; gap: var(--spacing-small); }
+            .button-group button { width: 100%; max-width: none; }
+            .container { padding: var(--spacing-medium); }
+            body { padding: var(--spacing-small); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-cogs"></i> مولد كروت وسكريبتات MikroTik</h1>
+
+        <!-- ALL FORM GROUPS -->
+        <div class="input-group">
+            <h2><i class="fas fa-network-wired"></i> إعدادات MikroTik</h2>
+            <div class="input-row">
+                <div class="input-item"><label for="userType"><i class="fas fa-users"></i> نوع المستخدمين:</label><select id="userType"><option value="usermanager" selected>User Manager</option><option value="hotspot">Hotspot</option></select></div>
+                <div class="input-item" id="customerInputItem"><label for="customer"><i class="fas fa-user-tag"></i> العميل (User Manager v6):</label><input type="text" id="customer" value="admin"></div>
+                <div class="input-item" id="versionInputItem"><label for="mikrotikVersion"><i class="fas fa-code-branch"></i> إصدار User Manager:</label><select id="mikrotikVersion"><option value="v6">v6</option><option value="v7">v7</option></select></div>
+                <div class="input-item" id="hotspotServerInputItem"><label for="hotspotServer"><i class="fas fa-server"></i> سيرفر الهوتسبوت:</label><input type="text" id="hotspotServer" value="all"></div>
+                <div class="input-item"><label for="profile"><i class="fas fa-sliders-h"></i> البروفايل:</label><input type="text" id="profile" value="default"></div>
+            </div>
+            <div class="input-row">
+                <div class="input-item" id="hotspotLimitInputItem"><label for="hotspotLimit"><i class="fas fa-hourglass-half"></i> مدة الصلاحية (اختياري):</label><input type="text" id="hotspotLimit" placeholder="مثال: 1d أو 12h30m"></div>
+                <div class="input-item"><label for="comment"><i class="fas fa-comment"></i> التعليق (اختياري):</label><input type="text" id="comment" value=""></div>
+                <div class="input-item"><label for="Location"><i class="fas fa-map-marker-alt"></i> الموقع/الرقم التسلسلي (اختياري):</label><input type="text" id="Location" value=""></div>
+            </div>
+        </div>
+        <div class="input-group">
+            <h2><i class="fas fa-key"></i> إعدادات توليد الحسابات</h2>
+            <div class="input-row">
+                <div class="input-item"><label for="credentialType"><i class="fas fa-font"></i> نوع الكود:</label><select id="credentialType"><option value="mixed">أرقام وحروف</option><option value="numbers">أرقام فقط</option><option value="letters">حروف فقط</option></select></div>
+                <div class="input-item"><label for="credentialMatch"><i class="fas fa-link"></i> تطابق الاسم وكلمة السر:</label><select id="credentialMatch"><option value="different">مختلفة</option><option value="same">متشابهة</option><option value="empty">كلمة سر فارغة</option></select></div>
+                <div class="input-item"><label for="numLength"><i class="fas fa-text-width"></i> طول الكود (الأدنى 5):</label><input type="number" id="numLength" min="5" value="8"></div>
+                <div class="input-item"><label for="numCount"><i class="fas fa-list-ol"></i> عدد الحسابات:</label><input type="number" id="numCount" min="1" value="50"></div>
+            </div>
+            <div class="input-row">
+                <div class="input-item"><label for="prefix"><i class="fas fa-grip-lines"></i> البادئة:</label><input type="text" id="prefix" placeholder="مثال: user_"></div>
+                <div class="input-item"><label for="sufix"><i class="fas fa-grip-lines-vertical"></i> النهاية (اسم المستخدم):</label><input type="text" id="sufix" placeholder="مثال: _end"></div>
+                <div class="input-item" id="passSufixItem"><label for="passsufix"><i class="fas fa-grip-lines-vertical"></i> النهاية (كلمة السر):</label><input type="text" id="passsufix" placeholder="مثال: _pass"></div>
+                <div class="input-item"><label for="scriptDelay"><i class="fas fa-clock"></i> تأخير السكريبت (ms) كل 100 كرت:</label><input type="number" id="scriptDelay" min="0" value="100"></div>
+            </div>
+        </div>
+        <div class="input-group">
+             <h2><i class="fas fa-file-pdf"></i> إعدادات PDF والطباعة</h2>
+             <div class="input-row">
+                 <div class="input-item"><label for="backgroundImage"><i class="fas fa-image"></i> صورة الخلفية:</label><input type="file" id="backgroundImage" accept="image/*"></div>
+                 <div class="input-item"><label for="columns"><i class="fas fa-columns"></i> الأعمدة:</label><input type="number" id="columns" value="4" min="1"></div>
+                 <div class="input-item"><label for="rows"><i class="fas fa-grip-horizontal"></i> الصفوف:</label><input type="number" id="rows" value="18" min="1"></div>
+                 <div class="input-item"><label for="boxSpacing"><i class="fas fa-expand-arrows-alt"></i> المسافة بين الكروت (mm):</label><input type="number" id="boxSpacing" value="2" min="0" step="0.1"></div>
+             </div>
+             <h3><i class="fas fa-print"></i> خيارات النصوص</h3>
+             <div class="input-row"><div class="input-item checkbox-item"><label for="printUsername">طباعة اسم المستخدم:</label><input type="checkbox" id="printUsername" checked></div><div class="input-item checkbox-item"><label for="printPassword">طباعة كلمة السر:</label><input type="checkbox" id="printPassword" checked></div></div>
+             <div id="userNameTextInputs"><h3><i class="fas fa-user"></i> إعدادات اسم المستخدم</h3><div class="input-row"><div class="input-item"><label for="usernameSize">حجم النص (pt):</label><input type="number" id="usernameSize" value="8" min="1" step="0.1"></div><div class="input-item"><label for="usernameColor"><i class="fas fa-palette"></i> لونه:</label><input type="color" id="usernameColor" value="#000000"></div><div class="input-item checkbox-item"><label for="usernameBold"><i class="fas fa-bold"></i> غامق:</label><input type="checkbox" id="usernameBold"></div><div class="input-item"><label for="usernamePositionX">أفقياً (mm):</label><input type="number" id="usernamePositionX" value="30" step="0.1"></div><div class="input-item"><label for="usernamePositionY">عمودياً (mm):</label><input type="number" id="usernamePositionY" value="5" step="0.1"></div></div></div>
+             <div id="passwordTextInputs"><h3><i class="fas fa-lock"></i> إعدادات كلمة السر</h3><div class="input-row"><div class="input-item"><label for="passwordSize">حجم النص (pt):</label><input type="number" id="passwordSize" value="8" min="1" step="0.1"></div><div class="input-item"><label for="passwordColor"><i class="fas fa-palette"></i> لونه:</label><input type="color" id="passwordColor" value="#000000"></div><div class="input-item checkbox-item"><label for="passwordBold"><i class="fas fa-bold"></i> غامق:</label><input type="checkbox" id="passwordBold"></div><div class="input-item"><label for="passwordPositionX">أفقياً (mm):</label><input type="number" id="passwordPositionX" value="30" step="0.1"></div><div class="input-item"><label for="passwordPositionY">عمودياً (mm):</label><input type="number" id="passwordPositionY" value="10" step="0.1"></div></div></div>
+             <h3><i class="fas fa-hashtag"></i> الرقم التسلسلي</h3>
+             <div class="input-row checkbox-item"><label for="useSerialNumber"><i class="fas fa-check-square"></i> طباعة رقم تسلسلي:</label><input type="checkbox" id="useSerialNumber"></div>
+             <div id="serialNumberInputs"><div class="input-row"><div class="input-item"><label for="serialStartNumber">يبدأ من:</label><input type="number" id="serialStartNumber" value="1" min="1"></div><div class="input-item"><label for="serialNumberSize">حجمه (pt):</label><input type="number" id="serialNumberSize" value="6" min="1" step="0.1"></div><div class="input-item"><label for="serialColor"><i class="fas fa-palette"></i> لونه:</label><input type="color" id="serialColor" value="#000000"></div><div class="input-item checkbox-item"><label for="serialBold"><i class="fas fa-bold"></i> غامق:</label><input type="checkbox" id="serialBold"></div><div class="input-item"><label for="serialPositionX">أفقياً (mm):</label><input type="number" id="serialPositionX" value="20" step="0.1"></div><div class="input-item"><label for="serialPositionY">عمودياً (mm):</label><input type="number" id="serialPositionY" value="5" step="0.1"></div></div></div>
+             <h3><i class="fas fa-calendar-alt"></i> التاريخ</h3>
+            <div class="input-row checkbox-item"><label for="useDatePrinting"><i class="fas fa-check-square"></i> طباعة التاريخ:</label><input type="checkbox" id="useDatePrinting"></div>
+            <div id="datePrintingInputs"><div class="input-row"><div class="input-item"><label for="dateSize">حجمه (pt):</label><input type="number" id="dateSize" value="8" min="1" step="0.1"></div><div class="input-item"><label for="dateColor"><i class="fas fa-palette"></i> لونه:</label><input type="color" id="dateColor" value="#000000"></div><div class="input-item checkbox-item"><label for="dateBold"><i class="fas fa-bold"></i> غامق:</label><input type="checkbox" id="dateBold"></div><div class="input-item"><label for="datePositionX">أفقياً (mm):</label><input type="number" id="datePositionX" value="48" step="0.1"></div><div class="input-item"><label for="datePositionY">عمودياً (mm):</label><input type="number" id="datePositionY" value="12" step="0.1"></div></div></div>
+        </div>
+
+        <div class="status-message" id="statusMessage"></div>
+        <button onclick="generateAll()" style="width: 100%; font-size: 1.2rem; padding: var(--spacing-medium); margin-bottom: 1rem;"><i class="fas fa-magic"></i> توليد الحسابات والسكريبت</button>
+        <h3><i class="fas fa-eye"></i> معاينة الكرت</h3>
+        <div id="preview" class="preview"></div>
+        <h3><i class="fas fa-code"></i> السكريبت الناتج:</h3>
+        <textarea id="output" readonly placeholder="سيظهر هنا سكريبت MikroTik بعد التوليد..."></textarea>
+                <!-- Settings Management -->
+        <div class="input-group">
+            <h2><i class="fas fa-save"></i> إدارة الإعدادات المحفوظة</h2>
+            <div class="input-row">
+                <div class="input-item"><label for="profileSelector"><i class="fas fa-network-wired"></i> اختر الشبكة:</label><select id="profileSelector">
+                    <option value="" selected>اضغط هنا</option>
+                </select></div>
+                <div class="input-item"><button onclick="addNewProfile()"><i class="fas fa-plus-circle"></i> إضافة شبكة</button></div>
+                <div class="input-item"><button onclick="deleteSelectedProfile()" style="background-color: var(--danger-color);"><i class="fas fa-trash-alt"></i> حذف الشبكة</button></div>
+            </div>
+            <div class="input-row">
+                <div class="input-item"><label for="templateSelector"><i class="fas fa-list-alt"></i> اختر فئة الإعدادات:</label><select id="templateSelector"></select></div>
+                <div class="input-item"><button onclick="saveCurrentSettings()"><i class="fas fa-save"></i> حفظ الفئة</button></div>
+                <div class="input-item"><button onclick="loadSelectedSettings()" style="background-color: var(--success-color);"><i class="fas fa-download"></i> تحميل الفئة</button></div>
+                <div class="input-item"><button onclick="deleteSelectedTemplate()" style="background-color: var(--warning-color); color: var(--dark-color);"><i class="fas fa-times-circle"></i> حذف الفئة</button></div>
+            </div>
+        </div>
+
+        <div class="button-group">
+             <button onclick="saveAsTxt()"><i class="fas fa-file-alt"></i> حفظ الحسابات (نص)</button>
+             <button onclick="saveAsMikroTik()"><i class="fas fa-download"></i> حفظ السكريبت</button>
+             <button onclick="generatePDF()"><i class="fas fa-file-pdf"></i> إنشاء PDF</button>
+             <button onclick="sendToMikroTik()" disabled title="يتطلب إعداد API"><i class="fas fa-upload"></i> إرسال لـ MikroTik</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+    // Global variables
+    let generatedNumbers = [], generatedCredentials = [], backgroundImageDataUrl = null;
+    const PROFILES_STORAGE_KEY = 'mikrotikGeneratorProfiles';
+
+    // --- Helper Functions ---
+    const getEl = id => document.getElementById(id);
+    const updateStatus = (message, type = 'info') => {
+        const statusEl = getEl('statusMessage');
+        statusEl.textContent = message;
+        statusEl.style.color = `var(--${type}-color, #000)`;
+    };
+    const generateRandomString = (type, length) => {
+        const chars = { numbers: '0123456789', letters: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', mixed: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' };
+        let result = '', charSet = chars[type] || chars.mixed;
+        for (let i = 0; i < length; i++) result += charSet.charAt(Math.floor(Math.random() * charSet.length));
+        return result;
+    };
+    
+    // --- UI Toggle Functions ---
+    const toggleVisibility = (checkboxId, elementId) => {
+        const checkbox = getEl(checkboxId);
+        const element = getEl(elementId);
+        const toggle = () => { element.style.display = checkbox.checked ? 'block' : 'none'; updatePreview(); };
+        checkbox.addEventListener('change', toggle);
+        toggle();
+    };
+    const toggleUserTypeInputs = () => {
+        const isHotspot = getEl('userType').value === 'hotspot';
+        getEl('customerInputItem').style.display = isHotspot ? 'none' : 'flex';
+        getEl('versionInputItem').style.display = isHotspot ? 'none' : 'flex';
+        getEl('hotspotServerInputItem').style.display = isHotspot ? 'flex' : 'none';
+        getEl('hotspotLimitInputItem').style.display = isHotspot ? 'flex' : 'none';
+    };
+
+    // --- Settings Management (localStorage) ---
+    const getAllProfiles = () => JSON.parse(localStorage.getItem(PROFILES_STORAGE_KEY)) || {};
+    const saveAllProfiles = (profiles) => localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
+    const getFormSettings = () => {
+        const settings = {};
+        document.querySelectorAll('.container input, .container select').forEach(input => {
+            if (input.id && !['backgroundImage', 'profileSelector', 'templateSelector'].includes(input.id)) {
+                settings[input.id] = (input.type === 'checkbox') ? input.checked : input.value;
+            }
+        });
+        return settings;
+    };
+    const setFormSettings = (settings) => {
+        Object.keys(settings).forEach(id => {
+            const input = getEl(id);
+            if (input) {
+                if (input.type === 'checkbox') input.checked = settings[id];
+                else input.value = settings[id];
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        });
+        updatePreview();
+    };
+    const populateProfileSelector = () => {
+        const profiles = getAllProfiles();
+        const selector = getEl('profileSelector');
+        const currentVal = selector.value;
+        selector.innerHTML = '<option value="" selected>اضغط هنا</option>';
+        Object.keys(profiles).forEach(name => selector.add(new Option(name, name)));
+        selector.value = currentVal;
+        if (!selector.value && selector.options.length > 0) selector.selectedIndex = 0;
+        selector.dispatchEvent(new Event('change'));
+    };
+    const populateTemplateSelector = () => {
+        const profiles = getAllProfiles();
+        const profileName = getEl('profileSelector').value;
+        const selector = getEl('templateSelector');
+        selector.innerHTML = '';
+        if (profileName && profiles[profileName]) {
+            Object.keys(profiles[profileName]).forEach(name => selector.add(new Option(name, name)));
+        }
+    };
+    window.addNewProfile = () => {
+        const name = prompt("الرجاء إدخال اسم الشبكة الجديدة:");
+        if (!name?.trim()) return;
+        const profiles = getAllProfiles();
+        if (profiles[name]) { alert("هذا الاسم موجود بالفعل!"); return; }
+        profiles[name] = {};
+        saveAllProfiles(profiles);
+        populateProfileSelector();
+        getEl('profileSelector').value = name;
+        populateTemplateSelector();
+        updateStatus(`تمت إضافة الشبكة: ${name}`, 'success');
+    };
+    window.deleteSelectedProfile = () => {
+        const name = getEl('profileSelector').value;
+        if (!name || !confirm(`هل أنت متأكد من حذف الشبكة "${name}" وكل الفئات بداخلها؟`)) return;
+        const profiles = getAllProfiles();
+        delete profiles[name];
+        saveAllProfiles(profiles);
+        populateProfileSelector();
+        updateStatus(`تم حذف الشبكة: ${name}`, 'success');
+    };
+    window.saveCurrentSettings = () => {
+        const profileName = getEl('profileSelector').value;
+        if (!profileName) { alert("الرجاء اختيار أو إنشاء شبكة أولاً."); return; }
+        const templateName = prompt("أدخل اسمًا لهذه الفئة من الإعدادات (مثلاً: كروت شهرية):", getEl('templateSelector').value || "");
+        if (!templateName?.trim()) return;
+        const profiles = getAllProfiles();
+        profiles[profileName][templateName] = getFormSettings();
+        saveAllProfiles(profiles);
+        populateTemplateSelector();
+        getEl('templateSelector').value = templateName;
+        updateStatus(`تم حفظ الإعدادات "${templateName}"`, 'success');
+    };
+    window.loadSelectedSettings = () => {
+        const profileName = getEl('profileSelector').value;
+        const templateName = getEl('templateSelector').value;
+        if (!profileName || !templateName) { alert("الرجاء اختيار شبكة وفئة لتحميلها."); return; }
+        const settings = getAllProfiles()[profileName]?.[templateName];
+        if (settings) {
+            setFormSettings(settings);
+            updateStatus(`تم تحميل الإعدادات: ${templateName}`, 'success');
+        } else {
+            updateStatus(`خطأ: لم يتم العثور على الإعدادات.`, 'danger');
+        }
+    };
+    window.deleteSelectedTemplate = () => {
+        const profileName = getEl('profileSelector').value;
+        const templateName = getEl('templateSelector').value;
+        if (!profileName || !templateName || !confirm(`هل أنت متأكد من حذف فئة الإعدادات "${templateName}"؟`)) return;
+        const profiles = getAllProfiles();
+        if (profiles[profileName]) {
+            delete profiles[profileName][templateName];
+            saveAllProfiles(profiles);
+            populateTemplateSelector();
+            updateStatus(`تم حذف الفئة: ${templateName}`, 'success');
+        }
+    };
+    
+    // --- Main Logic ---
+    window.generateAll = function() {
+        updateStatus("جارٍ توليد الحسابات...", "info");
+        const profile = getEl('profile').value.trim();
+        if (!profile) { return updateStatus("خطأ: حقل 'البروفايل' مطلوب.", "danger"); }
+        let script = '', usedUsernames = new Set();
+        generatedNumbers = []; generatedCredentials = [];
+        const count = parseInt(getEl('numCount').value);
+        for (let i = 0; i < count; i++) {
+            let username;
+            do { username = getEl('prefix').value.trim() + generateRandomString(getEl('credentialType').value, parseInt(getEl('numLength').value)) + getEl('sufix').value.trim(); } while (usedUsernames.has(username));
+            usedUsernames.add(username);
+            let password = '';
+            const match = getEl('credentialMatch').value;
+            if (match === 'same') { password = getEl('prefix').value.trim() + username.substring(getEl('prefix').value.length, username.length - getEl('sufix').value.length) + getEl('passsufix').value.trim(); }
+            else if (match === 'different') { password = generateRandomString(getEl('credentialType').value, parseInt(getEl('numLength').value)) + getEl('passsufix').value.trim(); }
+            let location = getEl('useSerialNumber').checked ? (parseInt(getEl('serialStartNumber').value) + i).toString() : getEl('Location').value.trim();
+            generatedNumbers.push(username);
+            generatedCredentials.push({ username, password, profile, comment: getEl('comment').value.trim(), location });
+            if (getEl('userType').value === 'usermanager') {
+                const customer = getEl('customer').value.trim() || 'admin';
+                if (getEl('mikrotikVersion').value === 'v6') { script += `/tool user-manager user add customer="${customer}" username="${username}" password="${password}" comment="${getEl('comment').value.trim()}" location="${location}";\n/tool user-manager user create-and-activate-profile customer="${customer}" profile=${profile} numbers=[find username="${username}"];\n`; }
+                else { script += `/user-manager user add name="${username}" password="${password}" comment="${getEl('comment').value.trim()}" location="${location}";\n/user-manager user-profile add profile="${profile}" user="${username}";\n`; }
+            } else {
+                const comment = getEl('comment').value.trim();
+                const finalComment = location ? (comment ? `${comment} | SN: ${location}` : `SN: ${location}`) : comment;
+                script += `/ip hotspot user add name="${username}" password="${password}" server="${getEl('hotspotServer').value.trim()||'all'}" profile="${profile}"`;
+                if(getEl('hotspotLimit').value.trim()) script += ` limit-uptime="${getEl('hotspotLimit').value.trim()}"`;
+                if(finalComment) script += ` comment="${finalComment}"`;
+                script += ";\n";
+            }
+            if (parseInt(getEl('scriptDelay').value) > 0 && (i + 1) % 100 === 0 && i < count - 1) { script += `/delay ${getEl('scriptDelay').value}ms;\n`; }
+        }
+        getEl('output').value = script;
+        updateStatus(`تم توليد ${generatedCredentials.length} حساب بنجاح.`, "success");
+        updatePreview();
+    };
+    
+    // --- Preview & File Generation ---
+    window.updatePreview = function() {
+        const preview = getEl('preview');
+        preview.innerHTML = '';
+        if (generatedCredentials.length === 0) {
+            preview.innerHTML = `<div style="color: var(--secondary-color);">تظهر المعاينة هنا بعد التوليد</div>`;
+            return;
+        }
+        const sampleCard = generatedCredentials[0];
+        const boxWidth_mm = (210 - (parseInt(getEl('columns').value) - 1) * parseFloat(getEl('boxSpacing').value)) / parseInt(getEl('columns').value);
+        const boxHeight_mm = (297 - (parseInt(getEl('rows').value) - 1) * parseFloat(getEl('boxSpacing').value)) / parseInt(getEl('rows').value);
+        const scale = Math.min((preview.offsetWidth - 30) / (boxWidth_mm * 3.78), (preview.offsetHeight - 30) / (boxHeight_mm * 3.78), 1);
+        const boxEl = document.createElement('div');
+        boxEl.className = 'box';
+        boxEl.style.width = `${boxWidth_mm * 3.78 * scale}px`;
+        boxEl.style.height = `${boxHeight_mm * 3.78 * scale}px`;
+        boxEl.style.backgroundImage = backgroundImageDataUrl ? `url(${backgroundImageDataUrl})` : 'none';
+        boxEl.style.backgroundColor = backgroundImageDataUrl ? 'transparent' : '#fff';
+        boxEl.style.backgroundSize = '100% 100%';
+        const addText = (text, xId, yId, sizeId, colorId, boldId) => {
+            const el = document.createElement('div');
+            el.textContent = text;
+            el.style.left = `${parseFloat(getEl(xId).value-17) * 3.78 * scale}px`;
+            el.style.top = `${parseFloat(getEl(yId).value-3) * 3.78 * scale}px`;
+            el.style.fontSize = `${parseFloat(getEl(sizeId).value) * (4/3) * scale}px`;
+            el.style.color = getEl(colorId).value;
+            el.style.fontWeight = getEl(boldId).checked ? 'bold' : 'normal';
+            boxEl.appendChild(el);
+        };
+        if (getEl('printUsername').checked) addText(sampleCard.username, 'usernamePositionX', 'usernamePositionY', 'usernameSize', 'usernameColor', 'usernameBold');
+        if (getEl('printPassword').checked) addText(sampleCard.password, 'passwordPositionX', 'passwordPositionY', 'passwordSize', 'passwordColor', 'passwordBold');
+        if (getEl('useSerialNumber').checked) addText(sampleCard.location, 'serialPositionX', 'serialPositionY', 'serialNumberSize', 'serialColor', 'serialBold');
+        if (getEl('useDatePrinting').checked) addText(new Date().toLocaleDateString('ar-EG'), 'datePositionX', 'datePositionY', 'dateSize', 'dateColor', 'dateBold');
+        preview.appendChild(boxEl);
+    };
+    window.saveAsTxt = function() {
+        if (generatedCredentials.length === 0) { return updateStatus("لا توجد حسابات ليتم حفظها.", "danger"); }
+        let content = generatedCredentials.map(c => `${c.username}\t${c.password}`).join('\n');
+        const blob = new Blob([content], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'mikrotik_credentials.txt';
+        a.click();
+        updateStatus("تم حفظ الملف النصي.", "success");
+    };
+    window.saveAsMikroTik = function() {
+        const script = getEl('output').value;
+        if (!script.trim()) { return updateStatus("لا يوجد سكريبت ليتم حفظه.", "danger"); }
+        const blob = new Blob([script], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'mikrotik_script.rsc';
+        a.click();
+        updateStatus("تم حفظ سكريبت MikroTik.", "success");
+    };
+    window.generatePDF = function() {
+        if (generatedCredentials.length === 0) { return updateStatus("لا توجد حسابات ليتم إنشاء PDF.", "danger"); }
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const columns = parseInt(getEl('columns').value), rows = parseInt(getEl('rows').value);
+            const boxWidth = (210 - (columns - 1) * parseFloat(getEl('boxSpacing').value)) / columns;
+            const boxHeight = (297 - (rows - 1) * parseFloat(getEl('boxSpacing').value)) / rows;
+            const spacing = parseFloat(getEl('boxSpacing').value);
+            let cardIndex = 0;
+            const addTextToPDF = (doc, text, x, y, size, color, bold) => {
+                doc.setFontSize(size);
+                doc.setTextColor(color);
+                doc.setFont(undefined, bold ? 'bold' : 'normal');
+                doc.text(text, x, y);
+            };
+            for (let row = 0; row < rows && cardIndex < generatedCredentials.length; row++) {
+                for (let col = 0; col < columns && cardIndex < generatedCredentials.length; col++) {
+                    const x = col * (boxWidth + spacing);
+                    const y = row * (boxHeight + spacing);
+                    const card = generatedCredentials[cardIndex];
+                    if (backgroundImageDataUrl) {
+                        doc.addImage(backgroundImageDataUrl, 'JPEG', x, y, boxWidth, boxHeight, undefined, 'FAST');
+                    } else {
+                        doc.rect(x, y, boxWidth, boxHeight, 'S');
+                    }
+                    if (getEl('printUsername').checked) addTextToPDF(doc, card.username, x + parseFloat(getEl('usernamePositionX').value), y + parseFloat(getEl('usernamePositionY').value), parseFloat(getEl('usernameSize').value), getEl('usernameColor').value, getEl('usernameBold').checked);
+                    if (getEl('printPassword').checked) addTextToPDF(doc, card.password, x + parseFloat(getEl('passwordPositionX').value), y + parseFloat(getEl('passwordPositionY').value), parseFloat(getEl('passwordSize').value), getEl('passwordColor').value, getEl('passwordBold').checked);
+                    if (getEl('useSerialNumber').checked) addTextToPDF(doc, card.location, x + parseFloat(getEl('serialPositionX').value), y + parseFloat(getEl('serialPositionY').value), parseFloat(getEl('serialNumberSize').value), getEl('serialColor').value, getEl('serialBold').checked);
+                    if (getEl('useDatePrinting').checked) addTextToPDF(doc, new Date().toLocaleDateString('ar-EG'), x + parseFloat(getEl('datePositionX').value), y + parseFloat(getEl('datePositionY').value), parseFloat(getEl('dateSize').value), getEl('dateColor').value, getEl('dateBold').checked);
+                    cardIndex++;
+                }
+            }
+            doc.save('mikrotik_cards.pdf');
+            updateStatus("تم إنشاء ملف PDF بنجاح.", "success");
+        } catch (error) {
+            console.error("خطأ في إنشاء PDF:", error);
+            updateStatus("حدث خطأ أثناء إنشاء PDF.", "danger");
+        }
+    };
+    window.sendToMikroTik = function() { updateStatus("هذه الميزة تتطلب إعداد API.", "warning"); };
+
+    // --- Event Listeners ---
+    document.addEventListener('DOMContentLoaded', function() {
+        getEl('userType').addEventListener('change', toggleUserTypeInputs);
+        getEl('printUsername').addEventListener('change', () => { getEl('userNameTextInputs').style.display = getEl('printUsername').checked ? 'block' : 'none'; updatePreview(); });
+        getEl('printPassword').addEventListener('change', () => { getEl('passwordTextInputs').style.display = getEl('printPassword').checked ? 'block' : 'none'; updatePreview(); });
+        getEl('credentialMatch').addEventListener('change', () => { getEl('passSufixItem').style.display = getEl('credentialMatch').value === 'empty' ? 'none' : 'flex'; });
+        getEl('backgroundImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) { backgroundImageDataUrl = e.target.result; updatePreview(); };
+            reader.readAsDataURL(file);
+        });
+        toggleVisibility('useSerialNumber', 'serialNumberInputs');
+        toggleVisibility('useDatePrinting', 'datePrintingInputs');
+        getEl('printUsername').dispatchEvent(new Event('change'));
+        getEl('printPassword').dispatchEvent(new Event('change'));
+        getEl('credentialMatch').dispatchEvent(new Event('change'));
+        getEl('profileSelector').addEventListener('change', populateTemplateSelector);
+        populateProfileSelector();
+        toggleUserTypeInputs();
+        updatePreview();
+    });
+    </script>
+</body>
+</html>
